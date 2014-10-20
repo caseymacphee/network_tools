@@ -7,8 +7,8 @@ def run_client():
 		socket.IPPROTO_IP
 		)
 	client_socket.connect(('127.0.0.1', 50000))
-	
-	if __name__ == '__builtin__' or __name__ == '__main__':
+	print __name__
+	if __name__ == '__builtin__' or __name__ == '__main__' or __name__ == 'echo_client':
 		message = raw_input("What would you like to send? ('quit' to shutdown server)\n: ")
 		client_socket.sendall(message)
 		client_socket.shutdown(socket.SHUT_WR)
