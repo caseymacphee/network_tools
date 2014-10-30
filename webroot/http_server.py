@@ -13,7 +13,7 @@ def handle(socket, address):
 	HTTPargs = HTTPmessage[0].split(' ')
 	for i, arguments in enumerate(HTTPargs):
 		HTTPargs[i] = arguments.rstrip()
-
+	print HTTPargs
 	if 'GET' not in HTTPargs:
 		print 'inside bad request'
 		message = throw_error('GET')
