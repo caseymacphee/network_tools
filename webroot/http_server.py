@@ -57,7 +57,8 @@ HTTP/1.0 200 OK
 {}
 
 
-""".format(newhtmlcontent)
+"""
+##.format(newhtmlcontent)
 
 	return header
 
