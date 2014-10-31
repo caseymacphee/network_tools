@@ -1,5 +1,6 @@
 import pytest
 import socket
+from gevent.pool import Pool
 
 ### Must have http_server running in a seperate process ###
 def run_client(message):
@@ -36,3 +37,11 @@ def test_headers():
 	assert 'Content-Length:127' in callback
 	callback = run_client("HTTP/1.1 / GET\r\n\r\n")
 	assert 'Content-Length:188' in callback
+
+def test_multi_request():
+	pool = Pool(5)
+	pool.map(_multi_request, "HTTP/1.1 /content1 GET \r\n\r\n")
+
+def _multi_request(request_type):
+	callback = run_client(request_type)
+	assert '200 OK' in callback

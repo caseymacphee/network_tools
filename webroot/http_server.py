@@ -5,9 +5,9 @@ import os
 
 
 def handle(socket, address):
-	
 	print 'Listening...'
 	clientmessage = socket.recv(32)
+	print clientmessage
 	HTTPmessage = clientmessage.split('\r\n')
 
 	HTTPargs = HTTPmessage[0].split(' ')
@@ -16,29 +16,31 @@ def handle(socket, address):
 
 	if 'GET' not in HTTPargs:
 		message = throw_error('GET')
+		socket.recv(32)
 		socket.sendall(message)
-	else:
-		if 'HTTP/1.1' in HTTPargs:
-			clientmessage = socket.recv(32)
-
-			if HTTPargs[1] == '/directory':
-				header = get_header(HTTPargs[1])
-			elif HTTPargs[1] == '/content1':
-				header = get_header(HTTPargs[1])
-			else:
-				header = get_header()
+	elif 'HTTP/1.1' not in HTTPargs:
+		message = throw_error('HTTP')
+		socket.recv(32)	
+		socket.sendall(message)
+		message = throw_error('HTTP')
+		socket.sendall(message)
 			
-			socket.sendall(header)
+	else:
+		clientmessage = socket.recv(32)
+		if HTTPargs[1] == '/directory':
+			header = get_header(HTTPargs[1])
+		elif HTTPargs[1] == '/content1':
+			header = get_header(HTTPargs[1])
 		else:
-			message = throw_error('HTTP')
-			socket.sendall(message)
+			header = get_header()
+		socket.sendall(header)
 
 	socket.close()
 	#Outside the loop
 
 
 def get_header(arg = None):
-	if arg == '/directory1':
+	if arg == '/directory':
 		newhtmlcontent = html_base(os.listdir("images"))
 	elif arg == '/content1':
 		file = open('sample.txt', 'r')
