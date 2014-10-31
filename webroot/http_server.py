@@ -38,7 +38,7 @@ def handle(socket, address):
 
 
 def get_header(arg = None):
-	if arg == '/directory1':
+	if arg == '/directory':
 		newhtmlcontent = html_base(os.listdir("images"))
 	elif arg == '/content1':
 		file = open('sample.txt', 'r')
