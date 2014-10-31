@@ -12,8 +12,10 @@ def run_client(message):
 	client_socket.sendall(message)
 	client_socket.shutdown(socket.SHUT_WR)
 	callback = client_socket.recv(32)
+	callback2 = client_socket.recv(32)
+	callback3 = client_socket.recv(32)
 	client_socket.close()
-	return callback
+	return callback + callback2 + callback3
 
 def test_send():
 	callback = run_client("HTTP/1.1 / GET\r\n\r\n")
@@ -21,9 +23,16 @@ def test_send():
 
 def test_bad_call():
 	callback = run_client("HTTP/1.0 /GET\r\n")
-	assert '400 Bad Request' in callback
+	assert '403 Bad Request' in callback
 
 def test_non_get():
-	callback = run_client("HTTP/1.1")
-	assert '400 Bad Request' in callback
+	callback = run_client("HTTP / 1.1 /\r\n\r\n")
+	assert 'Bad Request' in callback
 
+def test_headers():
+	callback = run_client("HTTP/1.1 /content1 GET\r\n\r\n")
+	headers = '-Type:text/html; charset=UTF-8'
+	assert headers in callback
+	assert 'Content-Length:127' in callback
+	callback = run_client("HTTP/1.1 / GET\r\n\r\n")
+	assert 'Content-Length:188' in callback
